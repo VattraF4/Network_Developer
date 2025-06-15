@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: ===== CONFIGURE THESE PATHS =====
-set "PKT_FILE=D:\RUPP\Y3\Semester II\Network\Packet Tracker Activity\Network_Developer\Topology.pkt"
+set "PKT_FILE=D:\RUPP\Y3\Semester II\Network\Packet Tracker Activity\Network_Developer"
 set "GIT_REPO=D:\RUPP\Y3\Semester II\Network\Packet Tracker Activity\Network_Developer"
 set "GIT_REMOTE=origin"
 set "GIT_BRANCH=main"
@@ -10,8 +10,7 @@ set "PKT_EXE=D:\RUPP\Y3\Semester II\Network\Packet Tracker Activity\Network_Deve
 ::set "PKT_EXE=C:\Program Files\Cisco Packet Tracer 8.2.2\bin\PacketTracer.exe"
 ::
 :: ================================
-
-title PKT Git Auto-Commit (10s) - Press CTRL+C to Exit
+title PKT Git Auto-Sync (10s) - Press CTRL+C to Exit
 color 0A
 
 :: Change to repository directory
@@ -70,14 +69,16 @@ for %%F in ("%PKT_FILE%") do (
         
         echo ✓ Changes committed and pushed at %time%
         
-        :: Refresh Packet Tracer if running
+        :: Refresh Packet Tracer using menu navigation
         tasklist | find /i "PacketTracer.exe" >nul && (
             echo.
             echo Refreshing Packet Tracer...
-            taskkill /im PacketTracer.exe /f >nul
-            timeout /t 2 >nul
-            start "" "%PKT_EXE%" "%PKT_FILE%"
-            echo ✓ Packet Tracer reloaded
+            echo Sending menu commands to reload file...
+            
+            :: Use PowerShell to send Alt+F, R, then select first recent file
+            powershell -command "$wshell = New-Object -ComObject wscript.shell; $wshell.AppActivate('Packet Tracer'); Start-Sleep -m 500; $wshell.SendKeys('%%f'); Start-Sleep -m 500; $wshell.SendKeys('r'); Start-Sleep -m 1000; $wshell.SendKeys('{ENTER}')"
+            
+            echo ✓ Sent reload commands to Packet Tracer
         )
     )
 )
