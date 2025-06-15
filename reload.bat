@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: ===== CONFIGURE THESE PATHS =====
-set "PKT_FILE=D:\RUPP\Y3\Semester II\Network\Packet Tracker Activity\Network_Developer"
+set "PKT_FILE=D:\RUPP\Y3\Semester II\Network\Packet Tracker Activity\Network_Developer\Topology.pkt"
 set "GIT_REPO=D:\RUPP\Y3\Semester II\Network\Packet Tracker Activity\Network_Developer"
 set "GIT_REMOTE=origin"
 set "GIT_BRANCH=main"
@@ -75,8 +75,8 @@ for %%F in ("%PKT_FILE%") do (
             echo Refreshing Packet Tracer...
             echo Sending menu commands to reload file...
             
-            :: Use PowerShell to send Alt+F, R, then select first recent file
-            powershell -command "$wshell = New-Object -ComObject wscript.shell; $wshell.AppActivate('Packet Tracer'); Start-Sleep -m 500; $wshell.SendKeys('%%f'); Start-Sleep -m 500; $wshell.SendKeys('r'); Start-Sleep -m 1000; $wshell.SendKeys('{ENTER}')"
+            :: Use PowerShell to send Alt+F, O (Open Recent), then Enter
+            powershell -command "$wshell = New-Object -ComObject wscript.shell; $wshell.AppActivate('Packet Tracer'); Start-Sleep -m 500; $wshell.SendKeys('%%f'); Start-Sleep -m 500; $wshell.SendKeys('o'); Start-Sleep -m 1000; $wshell.SendKeys('{ENTER}')"
             
             echo ✓ Sent reload commands to Packet Tracer
         )
