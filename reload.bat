@@ -47,7 +47,7 @@ echo Watching: %PKT_FILE%
 echo Last modified: !LAST_TS!
 echo.
 echo Press CTRL+C to exit
-echo.
+echo.  
 
 :: Check for file changes
 for %%F in ("%PKT_FILE%") do (
