@@ -1,0 +1,291 @@
+en
+conf t
+inter g0/1
+no shut
+
+============StudyOffice============
+enable
+conf terminal
+
+! Configure console access
+hostname StudyOffice
+line con 0
+ password cisco
+ login
+ exec-timeout 3 0
+ exit
+
+! Set enable (privileged mode) password
+enable password cisco
+
+! Display warning message before login
+banner motd #UNATHORISED ACCESS IS PROHIBITED!!!#
+
+! Disable DNS lookup to prevent delays on mistyped commands
+no ip domain-lookup
+
+! Encrypt all plaintext passwords in the config
+service password-encryption
+
+! Create a local user account for SSH login
+username cisco password cisso
+
+! Set domain name (required for RSA key generation)
+ip domain-name cisco.com
+
+! Generate RSA key for SSH (1024-bit)
+crypto key generate rsa general-keys modulus 1024
+
+! Set SSH version 2 (more secure)
+ip ssh version 2
+
+! Create access control list to allow only 192.168.10.0/24 network
+access-list 2 permit 192.168.10.0 255.255.255.0
+access-list 2 deny any
+
+! Configure VTY lines for remote SSH access
+line vty 0 15
+ login local
+ transport input ssh
+ access-class 2 in
+ exit
+
+! Save configuration to NVRAM
+do write
+
+! Create VLANs
+vlan 10
+ name Management
+exit
+
+vlan 20
+ name LAN
+exit
+
+vlan 50
+ name WLAN
+exit
+
+
+
+! Configure trunk ports (Fa0/1 to Fa0/2)
+interface range fastEthernet0/1 - 2
+ switchport mode trunk
+exit
+
+! Configure access ports for VLAN 20 (Fa0/3 to Fa0/20)
+interface range fastEthernet0/3 - 20
+ switchport mode access
+ switchport access vlan 20
+exit
+
+! Configure access ports for VLAN 50 (Fa0/21 to Fa0/24)
+interface range fastEthernet0/21 - 24
+ switchport mode access
+ switchport access vlan 50
+exit
+
+! Configure access ports for VLAN 199 and shut them down (Gi0/1 to Gi0/2)
+interface range gigabitEthernet0/1 - 2
+ switchport mode access
+ switchport access vlan 199
+ shutdown
+exit
+
+! Save configuration
+do write
+
+============Student Support============
+enable
+conf terminal
+
+! Configure console access
+hostname StudentSupport
+line con 0
+ password cisco
+ login
+ exec-timeout 3 0
+ exit
+
+! Set enable (privileged mode) password
+enable password cisco
+
+! Display warning message before login
+banner motd #UNATHORISED ACCESS IS PROHIBITED!!!#
+
+! Disable DNS lookup to prevent delays on mistyped commands
+no ip domain-lookup
+
+! Encrypt all plaintext passwords in the config
+service password-encryption
+
+! Create a local user account for SSH login
+username cisco password cisso
+
+! Set domain name (required for RSA key generation)
+ip domain-name cisco.com
+
+! Generate RSA key for SSH (1024-bit)
+crypto key generate rsa general-keys modulus 1024
+
+! Set SSH version 2 (more secure)
+ip ssh version 2
+
+! Create access control list to allow only 192.168.10.0/24 network
+access-list 2 permit 192.168.10.0 255.255.255.0
+access-list 2 deny any
+
+! Configure VTY lines for remote SSH access
+line vty 0 15
+ login local
+ transport input ssh
+ access-class 2 in
+ exit
+
+! Save configuration to NVRAM
+do write
+
+! Create VLANs
+vlan 10
+ name Management
+exit
+
+vlan 20
+ name LAN
+exit
+
+vlan 50
+ name WLAN
+exit
+
+
+
+! Configure trunk ports (Fa0/1 to Fa0/2)
+interface range fastEthernet0/1 - 2
+ switchport mode trunk
+exit
+
+! Configure access ports for VLAN 20 (Fa0/3 to Fa0/20)
+interface range fastEthernet0/3 - 20
+ switchport mode access
+ switchport access vlan 20
+exit
+
+! Configure access ports for VLAN 50 (Fa0/21 to Fa0/24)
+interface range fastEthernet0/21 - 24
+ switchport mode access
+ switchport access vlan 50
+exit
+
+! Configure access ports for VLAN 199 and shut them down (Gi0/1 to Gi0/2)
+interface range gigabitEthernet0/1 - 2
+ switchport mode access
+ switchport access vlan 199
+ shutdown
+exit
+
+! Save configuration
+do write
+
+==========HumanResource==========
+enable
+conf terminal
+
+! Configure console access
+hostname BranchHumanResource
+line con 0
+ password cisco
+ login
+ exec-timeout 3 0
+ exit
+
+! Set enable (privileged mode) password
+enable password cisco
+
+! Display warning message before login
+banner motd #UNATHORISED ACCESS IS PROHIBITED!!!#
+
+! Disable DNS lookup to prevent delays on mistyped commands
+no ip domain-lookup
+
+! Encrypt all plaintext passwords in the config
+service password-encryption
+
+! Create a local user account for SSH login
+username cisco password cisso
+
+! Set domain name (required for RSA key generation)
+ip domain-name cisco.com
+
+! Generate RSA key for SSH (1024-bit)
+crypto key generate rsa general-keys modulus 1024
+
+! Set SSH version 2 (more secure)
+ip ssh version 2
+
+! Create access control list to allow only 192.168.10.0/24 network
+access-list 2 permit 192.168.10.0 255.255.255.0
+access-list 2 deny any
+
+! Configure VTY lines for remote SSH access
+line vty 0 15
+ login local
+ transport input ssh
+ access-class 2 in
+ exit
+
+! Save configuration to NVRAM
+do write
+
+==========ITCenter==========
+enable
+conf terminal
+
+! Configure console access
+hostname ITCenter
+line con 0
+ password cisco
+ login
+ exec-timeout 3 0
+ exit
+
+! Set enable (privileged mode) password
+enable password cisco
+
+! Display warning message before login
+banner motd #UNATHORISED ACCESS IS PROHIBITED!!!#
+
+! Disable DNS lookup to prevent delays on mistyped commands
+no ip domain-lookup
+
+! Encrypt all plaintext passwords in the config
+service password-encryption
+
+! Create a local user account for SSH login
+username cisco password cisso
+
+! Set domain name (required for RSA key generation)
+ip domain-name cisco.com
+
+! Generate RSA key for SSH (1024-bit)
+crypto key generate rsa general-keys modulus 1024
+
+! Set SSH version 2 (more secure)
+ip ssh version 2
+
+! Create access control list to allow only 192.168.10.0/24 network
+access-list 2 permit 192.168.10.0 255.255.255.0
+access-list 2 deny any
+
+! Configure VTY lines for remote SSH access
+line vty 0 15
+ login local
+ transport input ssh
+ access-class 2 in
+ exit
+
+! Save configuration to NVRAM
+do write
+
+
+

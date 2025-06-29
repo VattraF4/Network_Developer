@@ -1,0 +1,55 @@
+====== M-MLSW1=======
+configure terminal
+
+! Create VLANs
+vlan 10
+ name Management
+exit
+
+vlan 20
+ name LAN
+exit
+
+vlan 50
+ name WLAN
+exit
+
+! Configure trunk ports (Gig1/0/2 to Gig1/0/6)
+interface range gigabitEthernet1/0/2 - 6
+ switchport mode trunk
+exit
+
+! Configure access port (Gig1/0/10) for VLAN 50 (WLAN)
+interface gigabitEthernet1/0/10
+ switchport mode access
+ switchport access vlan 50
+exit
+
+! Save configuration
+do write
+====== M-MLSW2=======
+
+configure terminal
+
+! Create VLANs
+vlan 10
+ name Management
+exit
+
+vlan 20
+ name LAN
+exit
+
+vlan 50
+ name WLAN
+exit
+
+! Configure trunk ports (Gig1/0/2 to Gig1/0/6)
+interface range gigabitEthernet1/0/2 - 6
+ switchport mode trunk
+exit
+inter g1/0/5
+exit
+
+! Save configuration
+do write

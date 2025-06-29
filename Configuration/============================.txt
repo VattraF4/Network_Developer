@@ -1,0 +1,270 @@
+============================
+ip cloudServer 
+
+20.0.0.2
+255.255.255.252
+20.0.0.1
+
+=== IPCouldRouter=====
+
+inter s0/1/1
+ip add 10.10.10.1 255.255.255.252
+
+
+inter s0/1/0
+ip add 10.10.10.6 255.255.255.252 
+ex
+do wr
+
+inter g0/0
+ip add 20.0.0.1 255.255.255.252
+ex
+do wr
+router rip
+version 2
+network 20.0.0.0
+network 10.10.10.4
+
+=============================
+
+
+
+
+
+
+
+-----------Main Router-----------
+int se0/1/1
+clock rate 64000
+in se0/1/0
+clock rate 64000
+ex
+inter s0/1/0
+ip add 10.10.10.5 255.255.255.252
+ex
+inter g0/0
+ip add 20.0.0.1 255.255.255.252
+--
+router rip
+version 2
+network 10.10.10.0
+network 10.10.10.4
+network 192.168.1.0
+network 192.168.2.0
+network 192.168.3.0
+network 192.168.4.0
+do
+
+=============== MainCoreSwith ================
+
+inter g1/0/2
+sw mod acc 
+sw acc vl 10
+
+----
+
+inter g1/0/3
+sw mod acc
+sw acc vl 20
+
+ ---
+inter g1/0/4
+sw mod acc
+sw acc vl 30
+
+
+----
+
+inter g1/0/5
+sw mod acc
+sw acc vl 40
+ex
+inter g1/0/6
+sw mod acc
+sw acc vl 50
+ ex
+inter g1/0/7
+sw mod acc
+sw acc vl 60
+
+--
+
+do wr
+
+-----------
+
+interface GigabitEthernet1/0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+exit
+do write
+
+---
+
+inter g0/0.10
+encapsulation dot1Q 10
+ip add 192.168.1.1 255.255.255.0
+ex
+inter g0/0.20
+encapsulation dot1Q 20
+ip add 192.168.2.1 255.255.255.0
+ex
+inter g0/0.30
+encapsulation dot1Q 30
+ip add 192.168.3.1 255.255.255.0
+ex
+inter g0/0.40
+encapsulation dot1Q 40
+ip add 192.168.4.1 255.255.255.0
+ex
+
+ip dhcp pool StudyOffice-pool
+ network 192.168.1.0 255.255.255.0
+ default-router 192.168.1.1
+ dns-server 192.168.1.1
+exit
+
+ip dhcp pool StudentSupport-pool
+ network 192.168.2.0 255.255.255.0
+ default-router 192.168.2.1
+ dns-server 192.168.2.1
+exit
+
+ip dhcp pool HumanResource-pool
+ network 192.168.3.0 255.255.255.0
+ default-router 192.168.3.1
+ dns-server 192.168.3.1
+exit
+ip dhcp pool ITCenter-pool
+ network 192.168.4.0 255.255.255.0
+ default-router 192.168.4.1
+ dns-server 192.168.4.1
+exit
+do wri
+
+
+
+
+
+
+
+=========== StudyOffice==================
+
+int range fa0/1-24
+sw mode acc
+sw mode acc vl 10
+do wr  
+
+int ran fa0/1-24
+sw mode  
+
+
+============ StudentSupport================
+
+int rang fa0/1-24
+sw mode acc
+sw mode acc as vl 20
+do wr 
+
+=============== HumanResource ==============
+
+int rang fa0/1-24
+sw mode acc
+sw  acc  vl 30
+do wr 
+
+=================ITCenter ===================
+
+int rang fa0/1-24
+sw mode acc
+sw acc as vl 40
+do wr 
+
+
+
+----------- Brand University --------------
+=================BrandRouter==================
+
+! Configure serial interface (for WAN/Router-to-Router connection)
+interface s0/1/0
+ ip address 10.10.10.2 255.255.255.252
+ no shutdown
+exit
+
+! Configure subinterface for VLAN 50 (Staff)
+interface g0/0.50
+ encapsulation dot1Q 50
+ ip address 192.168.9.1 255.255.255.0
+exit
+
+! Configure subinterface for VLAN 60 (Student)
+interface g0/0.60
+ encapsulation dot1Q 60   ! <<-- Corrected from your config (was wrong: dot1Q 50 again)
+ ip address 192.168.10.1 255.255.255.0
+exit
+
+! Enable DHCP service
+service dhcp
+
+! DHCP Pool for Staff VLAN (VLAN 50)
+ip dhcp pool Staff-pool
+ network 192.168.9.0 255.255.255.0
+ default-router 192.168.9.1
+ dns-server 192.168.9.1
+exit
+
+! DHCP Pool for Student VLAN (VLAN 60)
+ip dhcp pool StuLab-pool
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 192.168.10.1
+exit
+
+! Save configuration
+do write
+
+
+en
+conf t
+router rip
+version 2
+network 192.168.9.0
+network 192.168.10.0
+network 10.10.10.0
+ex
+
+================== BrandCoreSwitch ===========
+interface g1/0/2
+ switchport mode access
+ switchport access vlan 50
+exit
+
+interface g1/0/3
+ switchport mode access
+ switchport access vlan 60
+exit
+
+do write
+exit
+
+interface g1/0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+exit
+
+do write
+
+
+
+================== Staff =====================
+
+int rang fa0/1-24
+sw mode acc
+sw  acc  vl 50
+do wr 
+
+==================== Stu-LAN ==================
+int rang fa0/1-24
+sw mode acc
+sw  acc  vl 60
+do wr
