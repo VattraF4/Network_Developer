@@ -1,0 +1,211 @@
+2.1 SPT
+
+======DMZ-SW1 =============
+
+inter ran fa0/2-24
+spanning-tree portfast
+
+spanning-tree bpduguard enable
+ex
+do wr
+
+======HQ-MLSW1 =============
+inter g1/0/10
+spanning-tree portfast
+
+spanning-tree bpduguard enable
+ex
+do wr
+======HQSW1-4 & Brach SW1-3=============
+
+inter ran fa0/3-24
+spanning-tree portfast
+
+spanning-tree bpduguard enable
+ex
+do wr
+
+===========B-MLSW1-2=========
+
+enable
+configure terminal
+interface g1/0/1
+do reload
+
+3- channel port 
+
+================HQ-MLSW1 ==============
+
+inter ran gig1/0/21-23
+channel-group 1 mode active
+
+ex
+inter Port-channel 1
+sw mode tru
+exit
+do wri
+
+ip routing
+inter gig1/0/1
+no sw 
+ip add 10.20.20.33 255.255.255.252
+do wr
+
+================HQ-MLSW2 ==============
+
+inter ran gig1/0/21-23
+channel-group 1 mode passive
+
+ex
+inter Port-channel 1
+sw mode tru
+exit
+do wri
+
+ip routing
+inter gig1/0/1
+no sw 
+ip add 10.20.20.37 255.255.255.252
+do wr
+
+================B-MLSW1 ==============
+
+inter ran gig1/0/21-23
+channel-group 2 mode active
+
+ex
+inter Port-channel 2
+sw mode tru
+exit
+do wri
+
+ip routing
+inter gig1/0/1
+no sw 
+ip add 10.20.20.45 255.255.255.252
+do wr
+
+================B-MLSW2 ==============
+
+inter ran gig1/0/21-23
+channel-group 2 mode passive
+
+ex
+inter Port-channel 2
+sw mode tru
+exit
+do wri
+
+ip routing
+inter gig1/0/1
+no sw 
+ip add 10.20.20.45 255.255.255.252
+do wr
+
+
+================= set IP on HQ-ISP=======
+inter g0/0
+ip add 105.100.50.1 255.255.255.252
+ex
+inter s0/3/0
+ip add 20.20.20.2 255.255.255.252
+do wr
+======== INERNET =========
+inter s0/3/0
+ip add 20.20.20.1 255.255.255.252
+ex
+inter s0/3/1
+ip add 30.30.30.1 255.255.255.252
+ex
+inter g0/0
+ip add 8.0.0.1 255.255.255.252
+do wr
+======== BRANCH-ISP =========
+inter s0/3/0
+ip add 30.30.30.2 255.255.255.252
+ex
+inter g0/0
+ip add 205.200.100.1 255.255.255.252
+
+do wr
+
+
+================HQFWL==========
+
+conf t
+
+! === Interface G1/1 ===
+interface gigabitEthernet1/1
+ no shutdown
+ nameif INSIDE1
+ security-level 100
+ ip address 10.20.20.34 255.255.255.252
+ exit
+
+! === Interface G1/2 ===
+interface gigabitEthernet1/2
+ no shutdown
+ nameif INSIDE2
+ security-level 100
+ ip address 10.20.20.38 255.255.255.252
+ exit
+
+! === Interface G1/3 ===
+interface gigabitEthernet1/3
+ no shutdown
+ nameif DMZ
+ security-level 70
+ ip address 10.20.20.1 255.255.255.252
+ exit
+
+! === Interface G1/4 ===
+interface gigabitEthernet1/4
+ no shutdown
+ nameif OUTSIDE
+ security-level 0
+ ip address 105.100.50.2 255.255.255.252
+ exit
+
+! === Save configuration ===
+write memory
+
+! === Show interface configuration ===
+show running-config interface
+
+
+
+================BRFWL==========
+
+conf t
+
+! === Interface G1/1 ===
+interface gigabitEthernet1/1
+ no shutdown
+ nameif INSIDE1
+ security-level 100
+ ip address 10.20.20.42 255.255.255.252
+ exit
+
+! === Interface G1/2 ===
+interface gigabitEthernet1/2
+ no shutdown
+ nameif INSIDE2
+ security-level 100
+ ip address 10.20.20.46 255.255.255.252
+ exit
+
+
+! === Interface G1/3 ===
+interface gigabitEthernet1/4
+ no shutdown
+ nameif OUTSIDE
+ security-level 0
+ ip address 205.200.100.2 255.255.255.252
+ exit
+
+! === Save configuration ===
+write memory
+
+! === Show interface configuration ===
+show running-config interface
+
